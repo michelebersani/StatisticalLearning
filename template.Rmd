@@ -1,0 +1,50 @@
+
+
+```{r}
+
+library(cluster)
+library(factoextra)
+library(NbClust)
+
+data = read.csv('./data/Financial_Data.csv',nrows=1000)
+data <- data[1:(length(data)-3)]
+# Hierarchical
+
+
+distances = dist(data, method='euclidean')
+#Compute hierarchical clustering
+hc_centroid <- hclust(distances, method='centroid') # for centroid linkage
+hc_complete <- hclust(distances, method='complete')
+
+#Plot black tree
+fviz_dend(hc_centroid, as.ggplot = TRUE, show_labels = FALSE, main='Euclidean-Centroid')
+
+#identifying 2 groups by #clusters (=2)
+cluster_k <- cutree(hc_complete, k = 2)
+
+
+#identifying groups below height 3.8
+cluster_h <- cutree(hc_complete, h = 3.8) 
+
+#Plot the tree with cluster colors
+fviz_dend(hc_complete, k = 2, k_colors = "jco", as.ggplot = TRUE, show_labels = FALSE, main='Euclidean-Complete')
+
+#Plot clusterization with defined height
+fviz_dend(hc_complete, h = 3.8, k_colors = "jco", as.ggplot = TRUE, show_labels = FALSE, main='Euclidean-Complete')
+cluster_h
+
+#######################################
+# K-MEANS
+res <- kmeans(distances, 3)   # K = 3 here
+
+#K-MEANS with cool plot associated (on 2D plane of the first principal components)
+km_res <- eclust(distances, "kmeans", k = 3, hc_metric = "euclidean") 
+
+```
+
+NB: ogni volta che chiami un clusterizzatore, ti ritorna un dizionario, come km_res.
+Puoi accedere ai suoi elementi con km_res$sottoelemento
+
+```{r}
+
+```
