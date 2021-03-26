@@ -37,10 +37,18 @@ fviz_pca_var(pca_res,
 CLUSTERING
 
 ```{r}
+restricted_data = pca_res$x[1:100,1:65]
+restricted_data = restricted_data[-c(match(c(1,3),km_res$cluster)), ]
+distances = dist(restricted_data, method='euclidean')
+```
+
+
+
+```{r}
 
 # Hierarchical clustering
 
-distances = dist(data, method='euclidean')
+
 #Compute hierarchical clustering
 hc_centroid <- hclust(distances, method='centroid') # for centroid linkage
 hc_complete <- hclust(distances, method='complete')
@@ -51,7 +59,6 @@ fviz_dend(hc_centroid, as.ggplot = TRUE, show_labels = FALSE, main='Euclidean-Ce
 #identifying 2 groups by #clusters (=2)
 cluster_k <- cutree(hc_complete, k = 2)
 
-
 #identifying groups below height 3.8
 cluster_h <- cutree(hc_complete, h = 3.8) 
 
@@ -60,17 +67,33 @@ fviz_dend(hc_complete, k = 2, k_colors = "jco", as.ggplot = TRUE, show_labels = 
 
 #Plot clusterization with defined height
 fviz_dend(hc_complete, h = 3.8, k_colors = "jco", as.ggplot = TRUE, show_labels = FALSE, main='Euclidean-Complete')
-cluster_h
-
-#######################################
-# K-MEANS
-res <- kmeans(distances, 3)   # K = 3 here
-
-#K-MEANS with cool plot associated (on 2D plane of the first principal components)
-km_res <- eclust(distances, "kmeans", k = 3, hc_metric = "euclidean") 
-
 ```
 
+```{r}
+#######################################
+# K-MEANS
+res <- kmeans(restricted_data, 3)   # K = 3 here
+
+#K-MEANS with cool plot associated (on 2D plane of the first principal components)
+km_res <- eclust(restricted_data, "kmeans", k = 3, hc_metric = "euclidean")
+
+```
 NB: ogni volta che chiami un clusterizzatore, ti ritorna un dizionario, come km_res.
 Puoi accedere ai suoi elementi con km_res$sottoelemento
 
+
+
+```{r}
+#Silhouettes
+
+fviz_nbclust(restricted_data, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+```
+
+```{r}
+sil <- silhouette(x=km_res$cluster, dist = distances)
+```
+
+```{r}
+fviz_silhouette(sil)
+```
