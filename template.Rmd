@@ -38,7 +38,8 @@ CLUSTERING
 
 ```{r}
 restricted_data = pca_res$x[1:100,1:65]
-restricted_data = restricted_data[-c(match(c(1,3),km_res$cluster)), ]
+#DELETE OUTLIERS IN POSITIONS 1 and 3
+#restricted_data = restricted_data[-c(match(c(1,3),km_res$cluster)), ] 
 distances = dist(restricted_data, method='euclidean')
 ```
 
