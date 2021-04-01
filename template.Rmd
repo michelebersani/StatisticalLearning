@@ -6,8 +6,8 @@ library(cluster)
 library(factoextra)
 library(NbClust)
 
-data = read.csv('./data/Financial_Data.csv')
-data <- data[2:(length(data)-4)]
+data = read.csv('./data/diabetes.csv')
+data <- data[1:(length(data)-1)]
 ```
 
 
